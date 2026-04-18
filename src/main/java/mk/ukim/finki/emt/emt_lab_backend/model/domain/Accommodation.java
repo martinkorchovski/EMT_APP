@@ -7,6 +7,20 @@ import java.util.List;
 
 @Entity
 @Table(name = "accommodations")
+@NamedEntityGraph(
+        name = "Accommodation.withHostAndCountry",
+        attributeNodes = {
+                @NamedAttributeNode(value = "host", subgraph = "host-subgraph")
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "host-subgraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("country")
+                        }
+                )
+        }
+)
 public class Accommodation extends BaseAuditableEntity {
 
     @Column(nullable = false)
@@ -23,23 +37,23 @@ public class Accommodation extends BaseAuditableEntity {
     @JoinColumn(name = "state_id", nullable = false)
     private State state;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "accommodations_hosts",
-            joinColumns = @JoinColumn(name = "accommodation_id"),
-            inverseJoinColumns = @JoinColumn(name = "host_id")
-    )
-    private List<Host> hosts;
+    @ManyToOne
+    @JoinColumn(name = "host_id", nullable = false)
+    private Host host;
+
+    @Column(nullable = false)
+    private Boolean isRented;
 
     public Accommodation() {
     }
 
-    public Accommodation(String name, Integer numRooms, Category category, State state, List<Host> hosts) {
+    public Accommodation(String name, Integer numRooms, Category category, State state, Host host) {
         this.name = name;
         this.numRooms = numRooms;
         this.category = category;
         this.state = state;
-        this.hosts = hosts;
+        this.host = host;
+        this.isRented = false;
     }
 
     public String getName() {
@@ -58,8 +72,8 @@ public class Accommodation extends BaseAuditableEntity {
         return state;
     }
 
-    public List<Host> getHosts() {
-        return hosts;
+    public Host getHost() {
+        return host;
     }
 
     public void setName(String name) {
@@ -78,7 +92,15 @@ public class Accommodation extends BaseAuditableEntity {
         this.state = state;
     }
 
-    public void setHosts(List<Host> hosts) {
-        this.hosts = hosts;
+    public void setHost(Host host) {
+        this.host = host;
+    }
+
+    public Boolean getRented() {
+        return isRented;
+    }
+
+    public void setRented(Boolean rented) {
+        isRented = rented;
     }
 }

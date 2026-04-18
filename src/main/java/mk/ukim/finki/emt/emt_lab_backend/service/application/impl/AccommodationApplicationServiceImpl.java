@@ -1,16 +1,20 @@
 package mk.ukim.finki.emt.emt_lab_backend.service.application.impl;
 
-import mk.ukim.finki.emt.emt_lab_backend.model.domain.Accommodation;
-import mk.ukim.finki.emt.emt_lab_backend.model.domain.Category;
-import mk.ukim.finki.emt.emt_lab_backend.model.domain.Host;
-import mk.ukim.finki.emt.emt_lab_backend.model.domain.State;
-import mk.ukim.finki.emt.emt_lab_backend.model.dto.CreateAccommodationDTO;
-import mk.ukim.finki.emt.emt_lab_backend.model.dto.DisplayAccommodationDTO;
-import mk.ukim.finki.emt.emt_lab_backend.repository.AccomodationRepository;
-import mk.ukim.finki.emt.emt_lab_backend.repository.CategoryRepository;
-import mk.ukim.finki.emt.emt_lab_backend.repository.HostRepository;
-import mk.ukim.finki.emt.emt_lab_backend.repository.StateRepository;
+import mk.ukim.finki.emt.emt_lab_backend.model.domain.*;
+import mk.ukim.finki.emt.emt_lab_backend.model.dto.*;
+import mk.ukim.finki.emt.emt_lab_backend.model.events.AccommodationFullyOccupiedEvent;
+import mk.ukim.finki.emt.emt_lab_backend.model.events.AccommodationRentedEvent;
+import mk.ukim.finki.emt.emt_lab_backend.model.projection.AccommodationLongProjection;
+import mk.ukim.finki.emt.emt_lab_backend.model.projection.AccommodationShortProjection;
+import mk.ukim.finki.emt.emt_lab_backend.model.views.AccommodationStatsView;
+import mk.ukim.finki.emt.emt_lab_backend.model.views.AccommodationView;
+import mk.ukim.finki.emt.emt_lab_backend.repository.*;
 import mk.ukim.finki.emt.emt_lab_backend.service.application.AccommodationApplicationService;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,33 +23,71 @@ import java.util.Optional;
 @Service
 public class AccommodationApplicationServiceImpl implements AccommodationApplicationService {
 
-    private final AccomodationRepository accomodationRepository;
+    private final AccommodationRepository accommodationRepository;
     private final CategoryRepository categoryRepository;
     private final StateRepository stateRepository;
     private final HostRepository hostRepository;
+    private final AccommodationViewRepository accommodationViewRepository;
+    private final AccommodationStatsViewRepository accommodationStatsViewRepository;
+    private final ApplicationEventPublisher eventPublisher;
+    private final AccommodationActivityRepository accommodationActivityRepository;
 
-    public AccommodationApplicationServiceImpl(AccomodationRepository accomodationRepository,
+    public AccommodationApplicationServiceImpl(AccommodationRepository accommodationRepository,
                                                CategoryRepository categoryRepository,
                                                StateRepository stateRepository,
-                                               HostRepository hostRepository) {
-        this.accomodationRepository = accomodationRepository;
+                                               HostRepository hostRepository, AccommodationViewRepository accommodationViewRepository, AccommodationStatsViewRepository accommodationStatsViewRepository, ApplicationEventPublisher eventPublisher, AccommodationActivityRepository accommodationActivityRepository) {
+        this.accommodationRepository = accommodationRepository;
         this.categoryRepository = categoryRepository;
         this.stateRepository = stateRepository;
         this.hostRepository = hostRepository;
+        this.accommodationViewRepository = accommodationViewRepository;
+        this.accommodationStatsViewRepository = accommodationStatsViewRepository;
+        this.eventPublisher = eventPublisher;
+        this.accommodationActivityRepository = accommodationActivityRepository;
+    }
+
+    private AccommodationResponseDTO toDTO(Accommodation a) {
+        return new AccommodationResponseDTO(
+                a.getId(),
+                a.getName(),
+                a.getNumRooms(),
+                a.getCategory().getName(),
+                a.getState().getName(),
+                a.getHost().getName() + " " + a.getHost().getSurname(),
+                a.getHost().getCountry().getName()
+        );
     }
 
     @Override
-    public List<DisplayAccommodationDTO> findAll() {
-        return accomodationRepository.findAll()
-                .stream()
-                .map(DisplayAccommodationDTO::from)
-                .toList();
+    public Page<AccommodationResponseDTO> findAll(
+            String name,
+            Long categoryId,
+            Long hostId,
+            String country,
+            Integer rooms,
+            Integer page,
+            Integer size,
+            String sortBy,
+            String direction
+    ) {
+
+        Sort sort = direction.equalsIgnoreCase("DESC")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Accommodation> pageResult = accommodationRepository.findAllFiltered(
+                name, categoryId, hostId, country, rooms, pageable
+        );
+
+        return pageResult.map(this::toDTO);
     }
 
 
     @Override
     public Optional<DisplayAccommodationDTO> findById(Long id) {
-        return accomodationRepository.findById(id).map(DisplayAccommodationDTO::from);
+        return accommodationRepository.findById(id).map(DisplayAccommodationDTO::from);
     }
 
     @Override
@@ -56,7 +98,8 @@ public class AccommodationApplicationServiceImpl implements AccommodationApplica
         State state = stateRepository.findById(dto.stateId())
                 .orElseThrow(() -> new IllegalStateException("State not found with id: " + dto.stateId()));
 
-        List<Host> hosts = hostRepository.findAllById(dto.hostIds());
+        Host host = hostRepository.findById(dto.hostId())
+                .orElseThrow(() -> new IllegalStateException("Host not found with id: " + dto.hostId()));
 
 
         Accommodation accommodation = new Accommodation(
@@ -64,16 +107,16 @@ public class AccommodationApplicationServiceImpl implements AccommodationApplica
                 dto.numRooms(),
                 category,
                 state,
-                hosts
+                host
         );
 
-        Accommodation saved = accomodationRepository.save(accommodation);
+        Accommodation saved = accommodationRepository.save(accommodation);
         return DisplayAccommodationDTO.from(saved);
     }
 
     @Override
     public Optional<DisplayAccommodationDTO> update(Long id, CreateAccommodationDTO dto) {
-        return accomodationRepository.findById(id)
+        return accommodationRepository.findById(id)
                 .map(acc -> {
                     Category category = categoryRepository.findById(dto.categoryId())
                             .orElseThrow(() -> new IllegalStateException("Category not found with id: " + dto.categoryId()));
@@ -81,27 +124,25 @@ public class AccommodationApplicationServiceImpl implements AccommodationApplica
                     State state = stateRepository.findById(dto.stateId())
                             .orElseThrow(() -> new IllegalStateException("State not found with id: " + dto.stateId()));
 
-                    List<Host> hosts = hostRepository.findAllById(dto.hostIds());
-                    if (hosts.isEmpty()) {
-                        throw new IllegalStateException("No hosts found for ids: " + dto.hostIds());
-                    }
+                    Host host = hostRepository.findById(dto.hostId())
+                            .orElseThrow(() -> new IllegalStateException("Host not found with id: " + dto.hostId()));
 
                     acc.setName(dto.name());
                     acc.setNumRooms(dto.numRooms());
                     acc.setCategory(category);
                     acc.setState(state);
-                    acc.setHosts(hosts);
+                    acc.setHost(host);
 
-                    Accommodation updated = accomodationRepository.save(acc);
+                    Accommodation updated = accommodationRepository.save(acc);
                     return DisplayAccommodationDTO.from(updated);
                 });
     }
 
     @Override
     public Optional<DisplayAccommodationDTO> deleteById(Long id) {
-        return accomodationRepository.findById(id)
+        return accommodationRepository.findById(id)
                 .map(acc -> {
-                    accomodationRepository.delete(acc);
+                    accommodationRepository.delete(acc);
                     return DisplayAccommodationDTO.from(acc);
                 });
 
@@ -109,16 +150,78 @@ public class AccommodationApplicationServiceImpl implements AccommodationApplica
 
     @Override
     public Optional<DisplayAccommodationDTO> markAsRented(Long id) {
-        return accomodationRepository.findById(id)
+        return accommodationRepository.findById(id)
                 .map(acc -> {
-                    if (acc.getNumRooms() != null && acc.getNumRooms() > 0) {
-                        acc.setNumRooms(acc.getNumRooms() - 1);
-                    } else {
-                        throw new IllegalStateException("No available rooms to rent for accommodation with id: " + id);
+                    acc.setRented(true);
+                    Accommodation updated = accommodationRepository.save(acc);
+
+                    eventPublisher.publishEvent(new AccommodationRentedEvent(this, updated));
+
+                    if (updated.getRented()) {
+                        eventPublisher.publishEvent(new AccommodationFullyOccupiedEvent(this, updated));
                     }
 
-                    Accommodation updated = accomodationRepository.save(acc);
                     return DisplayAccommodationDTO.from(updated);
                 });
+    }
+
+    @Override
+    public List<DisplayAccommodationDTO> findAllByRentedIsFalse() {
+        return accommodationRepository.findByIsRentedFalse()
+                .stream()
+                .map(DisplayAccommodationDTO::from)
+                .toList();
+    }
+
+    @Override
+    public List<DisplayAccommodationDTO> findAllByRentedIsTrue() {
+        return accommodationRepository.findByIsRentedTrue()
+                .stream()
+                .map(DisplayAccommodationDTO::from)
+                .toList();
+    }
+
+    @Override
+    public Page<DisplayAccommodationResponseDTO> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return accommodationRepository.findAll(pageable)
+                .map(DisplayAccommodationResponseDTO::from);
+    }
+
+    @Override
+    public List<AccommodationShortProjection> getShort() {
+        return accommodationRepository.findAllShort();
+    }
+
+    @Override
+    public List<AccommodationLongProjection> getDetailed() {
+        return accommodationRepository.findAllDetailed();
+    }
+
+    @Override
+    public List<Accommodation> findAllWithHostAndCountry() {
+        return accommodationRepository.findAllWithHostAndCountry();
+    }
+
+    @Override
+    public Optional<Accommodation> findWithHostAndCountryById(Long id) {
+        return accommodationRepository.findWithHostAndCountryById(id);
+    }
+
+    @Override
+    public List<AccommodationView> findAllFromView() {
+        return accommodationViewRepository.findAll();
+    }
+
+    @Override
+    public List<AccommodationStatsView> findAllStats() {
+        return accommodationStatsViewRepository.findAll();
+    }
+
+    @Override
+    public Page<AccommodationActivity> findAllActivities(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return accommodationActivityRepository.findAll(pageable);
     }
 }

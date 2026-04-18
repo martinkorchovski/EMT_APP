@@ -17,4 +17,9 @@ public interface AccommodationService {
     Optional<Accommodation> deleteById(Long id);
 
     Optional<Accommodation> markAsRented(Long id);
+
+    List<Accommodation> findByIsRentedTrue();
+
+    List<Accommodation> findByIsRentedFalse();
+
 }

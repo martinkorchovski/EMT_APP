@@ -13,7 +13,7 @@ public class Host extends BaseAuditableEntity{
     private String surname;
 
     @ManyToOne
-    @JoinColumn(name = "country.id", nullable = false)
+    @JoinColumn(name = "country_id", nullable = false)
     private Country country;
 
     public Host(){

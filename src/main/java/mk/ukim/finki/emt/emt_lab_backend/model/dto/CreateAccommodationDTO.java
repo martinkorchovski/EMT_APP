@@ -23,11 +23,11 @@ public record CreateAccommodationDTO(
         @NotNull(message = "Please select the state of the accommodation!")
         Long stateId,
 
-        @NotNull(message = "Please select at least one host for this accommodation!")
-        List<Long> hostIds
+        @NotNull(message = "Please select one host for this accommodation!")
+        Long hostId
 ) {
-        public Accommodation toAccommodation(Category category, State state, List<Host> hosts) {
-                return new Accommodation(name, numRooms, category, state, hosts);
+        public Accommodation toAccommodation(Category category, State state, Host host) {
+                return new Accommodation(name, numRooms, category, state, host);
         }
 
 }

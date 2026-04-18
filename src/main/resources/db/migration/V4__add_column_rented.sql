@@ -1,0 +1,2 @@
+ALTER TABLE accommodations
+    ADD COLUMN is_rented BOOLEAN DEFAULT FALSE;
