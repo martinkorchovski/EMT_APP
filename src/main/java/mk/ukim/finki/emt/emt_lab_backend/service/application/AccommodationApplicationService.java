@@ -8,7 +8,6 @@ import mk.ukim.finki.emt.emt_lab_backend.model.dto.*;
 import mk.ukim.finki.emt.emt_lab_backend.model.projection.AccommodationLongProjection;
 import mk.ukim.finki.emt.emt_lab_backend.model.projection.AccommodationShortProjection;
 import org.springframework.data.domain.Page;
-
 import java.util.List;
 import java.util.Optional;
 

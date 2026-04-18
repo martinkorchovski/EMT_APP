@@ -1,8 +1,6 @@
 package mk.ukim.finki.emt.emt_lab_backend.model.dto;
 
 import mk.ukim.finki.emt.emt_lab_backend.model.domain.Accommodation;
-import mk.ukim.finki.emt.emt_lab_backend.model.domain.BaseEntity;
-
 import java.util.List;
 
 public record DisplayAccommodationDTO(

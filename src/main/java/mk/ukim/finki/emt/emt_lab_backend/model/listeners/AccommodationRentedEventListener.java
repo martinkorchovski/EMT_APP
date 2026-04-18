@@ -5,7 +5,6 @@ import mk.ukim.finki.emt.emt_lab_backend.model.events.AccommodationRentedEvent;
 import mk.ukim.finki.emt.emt_lab_backend.repository.AccommodationActivityRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 
 @Component

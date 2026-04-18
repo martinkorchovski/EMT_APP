@@ -14,7 +14,6 @@ import mk.ukim.finki.emt.emt_lab_backend.service.application.AccommodationApplic
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController

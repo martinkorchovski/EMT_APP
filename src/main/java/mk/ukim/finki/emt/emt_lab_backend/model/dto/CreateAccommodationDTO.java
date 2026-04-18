@@ -26,8 +26,8 @@ public record CreateAccommodationDTO(
         @NotNull(message = "Please select one host for this accommodation!")
         Long hostId
 ) {
-        public Accommodation toAccommodation(Category category, State state, Host host) {
-                return new Accommodation(name, numRooms, category, state, host);
-        }
+    public Accommodation toAccommodation(Category category, State state, Host host) {
+        return new Accommodation(name, numRooms, category, state, host);
+    }
 
 }

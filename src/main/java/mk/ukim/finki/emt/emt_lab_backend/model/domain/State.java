@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "states")
-public class State extends BaseEntity{
+public class State extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String name;

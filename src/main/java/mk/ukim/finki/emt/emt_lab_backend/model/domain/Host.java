@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "hosts")
-public class Host extends BaseAuditableEntity{
+public class Host extends BaseAuditableEntity {
 
     @Column(nullable = false)
     private String name;
@@ -16,7 +16,7 @@ public class Host extends BaseAuditableEntity{
     @JoinColumn(name = "country_id", nullable = false)
     private Country country;
 
-    public Host(){
+    public Host() {
     }
 
     public Host(String name, String surname, Country country) {

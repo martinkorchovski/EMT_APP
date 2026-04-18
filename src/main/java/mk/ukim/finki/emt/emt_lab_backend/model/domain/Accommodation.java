@@ -1,9 +1,6 @@
 package mk.ukim.finki.emt.emt_lab_backend.model.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.List;
 
 @Entity
 @Table(name = "accommodations")

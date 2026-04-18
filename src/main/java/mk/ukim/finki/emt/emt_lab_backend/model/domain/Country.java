@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "countries")
-public class Country extends BaseEntity{
+public class Country extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
