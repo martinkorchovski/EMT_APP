@@ -24,9 +24,7 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
     List<Accommodation> findByIsRentedFalse();
 
     @Query("""
-            SELECT a FROM Accommodation a
-            JOIN a.host h
-            JOIN h.country c
+            SELECT a FROM Accommodation a JOIN a.host h JOIN h.country c
             WHERE (:name IS NULL OR LOWER(a.name) LIKE LOWER(CONCAT('%', CAST(:name AS string), '%')))
             AND (:categoryId IS NULL OR a.category.id = :categoryId)
             AND (:hostId IS NULL OR a.host.id = :hostId)
@@ -44,25 +42,14 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
     );
 
     @Query("""
-            SELECT 
-                a.id AS id,
-                a.name AS name,
-                c.name AS category,
-                a.numRooms AS numRooms
+            SELECT a.id AS id, a.name AS name, c.name AS category, a.numRooms AS numRooms
             FROM Accommodation a
             JOIN a.category c
             """)
     List<AccommodationShortProjection> findAllShort();
 
     @Query("""
-            SELECT 
-                   a.id AS id,
-                   a.name AS name,
-                   c.name AS category,
-                   a.numRooms AS numRooms,
-                   h.name AS hostName,
-                   h.surname AS hostSurname,
-                   co.name AS countryName
+            SELECT a.id AS id, a.name AS name, c.name AS category, a.numRooms AS numRooms, h.name AS hostName, h.surname AS hostSurname, co.name AS countryName
                FROM Accommodation a
                JOIN a.category c
                JOIN a.host h

@@ -8,7 +8,7 @@ public record CreateHostDTO(
         String surname,
         Long countryId
 ) {
-    public Host toAuthor(Country country) {
+    public Host toHost(Country country) {
         return new Host(name, surname, country);
     }
 }
