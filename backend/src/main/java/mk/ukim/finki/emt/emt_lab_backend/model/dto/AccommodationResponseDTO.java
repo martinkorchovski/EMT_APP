@@ -11,7 +11,7 @@ public record AccommodationResponseDTO(
         String host,
         String country
 ) {
-    private AccommodationResponseDTO toDTO(Accommodation a) {
+    public AccommodationResponseDTO toDTO(Accommodation a) {
         return new AccommodationResponseDTO(
                 a.getId(),
                 a.getName(),

@@ -10,6 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface HostApplicationService {
+    List<DisplayHostDTO> findAll();
+
     Optional<DisplayHostDTO> findById(Long id);
 
     DisplayHostDTO create(CreateHostDTO dto);

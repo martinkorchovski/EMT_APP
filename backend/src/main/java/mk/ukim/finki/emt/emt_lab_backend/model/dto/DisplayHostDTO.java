@@ -7,14 +7,14 @@ public record DisplayHostDTO(
         Long id,
         String name,
         String surname,
-        Long countryId
+        String countryName
 ) {
     public static DisplayHostDTO from(Host host) {
         return new DisplayHostDTO(
                 host.getId(),
                 host.getName(),
                 host.getSurname(),
-                host.getCountry().getId()
+                host.getCountry().getName()
         );
     }
 

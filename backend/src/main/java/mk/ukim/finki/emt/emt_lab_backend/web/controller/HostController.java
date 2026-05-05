@@ -18,6 +18,18 @@ public class HostController {
         this.hostApplicationService = hostApplicationService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<DisplayHostDTO>> getAllHosts() {
+        return ResponseEntity.ok(hostApplicationService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DisplayHostDTO> getHostById(@PathVariable Long id) {
+        return hostApplicationService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/addHost")
     public ResponseEntity<DisplayHostDTO> createHost(@RequestBody CreateHostDTO createHostDTO) {
         return ResponseEntity.ok(hostApplicationService.create(createHostDTO));

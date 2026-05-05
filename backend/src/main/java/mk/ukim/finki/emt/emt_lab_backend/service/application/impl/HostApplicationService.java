@@ -25,6 +25,13 @@ public class HostApplicationService implements mk.ukim.finki.emt.emt_lab_backend
 
 
     @Override
+    public List<DisplayHostDTO> findAll() {
+        return hostRepository.findAll().stream()
+                .map(DisplayHostDTO::from)
+                .toList();
+    }
+
+    @Override
     public Optional<DisplayHostDTO> findById(Long id) {
         return hostRepository.findById(id).map(DisplayHostDTO::from);
     }
