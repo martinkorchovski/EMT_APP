@@ -1,36 +1,18 @@
-import { Container, Typography, CircularProgress, Alert, Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@mui/material';
-import { useHosts } from '../hooks/useHosts';
+import { Typography } from '@mui/material';
+import HostGrid from '../components/host/HostGrid.tsx';
+import { useHosts } from '../hooks/useHosts.ts';
 
 const HostsPage = () => {
     const { hosts, loading, error } = useHosts();
 
-    if (loading) return <CircularProgress />;
-    if (error) return <Alert severity="error">{error}</Alert>;
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
-        <Container>
-            <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>Hosts</Typography>
-            <Paper>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Surname</TableCell>
-                            <TableCell>Country</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {hosts.map(host => (
-                            <TableRow key={host.id}>
-                                <TableCell>{host.name}</TableCell>
-                                <TableCell>{host.surname}</TableCell>
-                                <TableCell>{host.countryName}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </Paper>
-        </Container>
+        <div>
+            <Typography variant='h4' sx={{ textAlign: 'center', mb: 2 }}>Hosts</Typography>
+            <HostGrid hosts={hosts} />
+        </div>
     );
 };
 

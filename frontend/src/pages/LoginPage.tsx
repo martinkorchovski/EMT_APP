@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Container, TextField, Button, Typography, Alert, Box } from '@mui/material';
-import axiosInstance from '../api/axiosInstance';
+import axiosInstance from '../api/repositories/axiosInstance.ts';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {

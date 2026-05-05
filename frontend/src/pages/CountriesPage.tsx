@@ -1,34 +1,18 @@
-import { Container, Typography, CircularProgress, Alert, Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@mui/material';
-import { useCountries } from '../hooks/useCountries';
+import { Typography } from '@mui/material';
+import CountryGrid from '../components/country/CountryGrid.tsx';
+import { useCountries } from '../hooks/useCountries.ts';
 
 const CountriesPage = () => {
     const { countries, loading, error } = useCountries();
 
-    if (loading) return <CircularProgress />;
-    if (error) return <Alert severity="error">{error}</Alert>;
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
-        <Container>
-            <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>Countries</Typography>
-            <Paper>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Continent</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {countries.map(country => (
-                            <TableRow key={country.id}>
-                                <TableCell>{country.name}</TableCell>
-                                <TableCell>{country.continent}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </Paper>
-        </Container>
+        <div>
+            <Typography variant='h4' sx={{ textAlign: 'center', mb: 2 }}>Countries</Typography>
+            <CountryGrid countries={countries} />
+        </div>
     );
 };
 

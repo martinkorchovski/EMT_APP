@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import type { Host } from '../types';
-import { getAllHosts, getHostById } from '../api/hostRepository';
+import { getAllHosts, getHostById } from '../api/repositories/hostRepository.ts';
+import type {Host} from "../api/types/host.ts";
 
 export const useHosts = () => {
     const [hosts, setHosts] = useState<Host[]>([]);

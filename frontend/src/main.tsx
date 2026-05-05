@@ -10,6 +10,8 @@ import LoginPage from './pages/LoginPage'
 import AccommodationDetailsPage from "./pages/AccommodationDetailsPage.tsx"
 import HostDetailsPage from "./pages/HostDetailsPage.tsx"
 import CountryDetailsPage from "./pages/CountryDetailsPage.tsx"
+import UsersPage from "./pages/UsersPage.tsx";
+import UserDetailsPage from "./pages/UserDetailsPage.tsx";
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
@@ -23,6 +25,10 @@ createRoot(document.getElementById('root')!).render(
                     <Route path="hosts/:id" element={<HostDetailsPage />} />
                     <Route path="countries" element={<CountriesPage />} />
                     <Route path="countries/:id" element={<CountryDetailsPage />} />
+                    <Route path="users" element={<UsersPage />} />
+                    <Route path="users/:id" element={<UserDetailsPage />} />
+
+
                 </Route>
                 <Route path="/login" element={<LoginPage />} />
             </Routes>

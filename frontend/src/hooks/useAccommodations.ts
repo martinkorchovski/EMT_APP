@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import type {Accommodation, AccommodationDetail} from '../types';
-import { getAllAccommodations, getAccommodationById } from '../api/accommodationRepository';
+
+import { getAllAccommodations, getAccommodationById } from '../api/repositories/accommodationRepository.ts';
+import type {Accommodation, AccommodationDetail} from "../api/types/accommodation.ts";
 
 export const useAccommodations = () => {
     const [accommodations, setAccommodations] = useState<Accommodation[]>([]);

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import type { Country } from '../types';
-import { getAllCountries, getCountryById } from '../api/countryRepository';
+import { getAllCountries, getCountryById } from '../api/repositories/countryRepository.ts';
+import type {Country} from "../api/types/country.ts";
 
 export const useCountries = () => {
     const [countries, setCountries] = useState<Country[]>([]);

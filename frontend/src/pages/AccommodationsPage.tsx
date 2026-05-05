@@ -1,40 +1,18 @@
-import { Container, Typography, CircularProgress, Alert, Table, TableBody, TableCell, TableHead, TableRow, Paper } from '@mui/material';
-import { useAccommodations } from '../hooks/useAccommodations';
+import AccommodationGrid from '../components/accommodation/AccommodationGrid.tsx';
+import { useAccommodations } from '../hooks/useAccommodations.ts';
+import {Typography} from "@mui/material";
 
 const AccommodationsPage = () => {
     const { accommodations, loading, error } = useAccommodations();
 
-    if (loading) return <CircularProgress />;
-    if (error) return <Alert severity="error">{error}</Alert>;
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
-        <Container>
-            <Typography variant="h4" gutterBottom sx={{ textAlign: 'center' }}>Accommodations</Typography>
-            <Paper>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Rooms</TableCell>
-                            <TableCell>Host</TableCell>
-                            <TableCell>Category</TableCell>
-                            <TableCell>Rented</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {accommodations.map(acc => (
-                            <TableRow key={acc.id}>
-                                <TableCell>{acc.name}</TableCell>
-                                <TableCell>{acc.numRooms}</TableCell>
-                                <TableCell>{acc.host}</TableCell>
-                                <TableCell>{acc.category}</TableCell>
-                                <TableCell>{acc.isRented ? 'Yes' : 'No'}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </Paper>
-        </Container>
+        <div>
+            <Typography variant='h4' sx={{ textAlign: 'center', mb: 2 }}>Accommodations</Typography>
+            <AccommodationGrid accommodations={accommodations} />
+        </div>
     );
 };
 
