@@ -26,4 +26,28 @@ public class CountryServiceImpl implements CountryService {
     public Optional<Country> findById(Long id) {
         return countryRepository.findById(id);
     }
+
+    @Override
+    public Country save(Country country) {
+        return countryRepository.save(country);
+    }
+
+    @Override
+    public Optional<Country> update(Long id, Country country) {
+        return countryRepository.findById(id)
+                .map(existing -> {
+                    existing.setName(country.getName());
+                    existing.setContinent(country.getContinent());
+                    return countryRepository.save(existing);
+                });
+    }
+
+    @Override
+    public Optional<Country> deleteById(Long id) {
+        return countryRepository.findById(id)
+                .map(country -> {
+                    countryRepository.deleteById(id);
+                    return country;
+                });
+    }
 }

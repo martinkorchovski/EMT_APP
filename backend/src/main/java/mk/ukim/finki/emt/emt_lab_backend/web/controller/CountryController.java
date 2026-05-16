@@ -1,7 +1,7 @@
 package mk.ukim.finki.emt.emt_lab_backend.web.controller;
 
 import mk.ukim.finki.emt.emt_lab_backend.model.domain.Country;
-import mk.ukim.finki.emt.emt_lab_backend.service.domain.CountryService;
+import mk.ukim.finki.emt.emt_lab_backend.service.application.CountryApplicationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,9 +11,9 @@ import java.util.List;
 @RequestMapping("/api/countries")
 public class CountryController {
 
-    private final CountryService countryService;
+    private final CountryApplicationService countryService;
 
-    public CountryController(CountryService countryService) {
+    public CountryController(CountryApplicationService countryService) {
         this.countryService = countryService;
     }
 
@@ -27,5 +27,23 @@ public class CountryController {
         return countryService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Country> createCountry(@RequestBody Country country) {
+        return ResponseEntity.ok(countryService.save(country));
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<Country> updateCountry(@PathVariable Long id, @RequestBody Country country) {
+        return countryService.update(id, country)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteCountry(@PathVariable Long id) {
+        countryService.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }

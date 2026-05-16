@@ -23,7 +23,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User register(String username, String password) {
-        User user = new User(username, passwordEncoder.encode(password));
+        User user = new User(username, passwordEncoder.encode(password), "ROLE_USER");
         return userRepository.save(user);
     }
 
@@ -34,6 +34,6 @@ public class AuthServiceImpl implements AuthService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
-        return jwtUtil.generateToken(username);
+        return jwtUtil.generateToken(username, user.getRole());
     }
 }
