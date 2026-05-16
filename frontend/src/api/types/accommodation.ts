@@ -17,3 +17,19 @@ export interface AccommodationDetail {
     host: { id: number; name: string; surname: string };
     isRented: boolean;
 }
+
+export interface AccommodationCreateDto {
+    name: string;
+    numRooms: number;
+    categoryId: number;
+    stateId: number;
+    hostId: number;
+}
+
+export interface AccommodationUpdateDto {
+    name?: string;
+    numRooms?: number;
+    categoryId?: number;
+    stateId?: number;
+    hostId?: number;
+}

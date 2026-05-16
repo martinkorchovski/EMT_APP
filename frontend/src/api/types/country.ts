@@ -3,3 +3,13 @@ export interface Country {
     name: string;
     continent: string;
 }
+
+export interface CountryCreateDto {
+    name: string;
+    continent: string;
+}
+
+export interface CountryUpdateDto {
+    name?: string;
+    continent?: string;
+}

@@ -1,20 +1,55 @@
-import { useState, useEffect } from 'react';
-import { getAllCountries, getCountryById } from '../api/repositories/countryRepository.ts';
-import type {Country} from "../api/types/country.ts";
+import { useState, useEffect, useCallback } from 'react';
+import {
+    getAllCountries,
+    getCountryById,
+    createCountry,
+    updateCountry,
+    deleteCountry,
+} from '../api/repositories/countryRepository.ts';
+import type { Country, CountryCreateDto, CountryUpdateDto } from '../api/types/country.ts';
 
 export const useCountries = () => {
     const [countries, setCountries] = useState<Country[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
+    const fetchAll = useCallback(() => {
+        setLoading(true);
+        setError(null);
         getAllCountries()
             .then(res => setCountries(res.data))
             .catch(() => setError('Failed to fetch countries'))
             .finally(() => setLoading(false));
     }, []);
 
-    return { countries, loading, error };
+    useEffect(() => {
+        fetchAll();
+    }, [fetchAll]);
+
+    const addCountry = async (data: CountryCreateDto) => {
+        await createCountry(data);
+        fetchAll();
+    };
+
+    const editCountry = async (id: number, data: CountryUpdateDto) => {
+        await updateCountry(id, data);
+        fetchAll();
+    };
+
+    const removeCountry = async (id: number) => {
+        await deleteCountry(id);
+        fetchAll();
+    };
+
+    return {
+        countries,
+        loading,
+        error,
+        refetch: fetchAll,
+        addCountry,
+        editCountry,
+        removeCountry
+    };
 };
 
 export const useCountry = (id: number) => {

@@ -4,14 +4,22 @@ import type { Country } from '../../api/types/country.ts';
 
 interface CountryGridProps {
     countries: Country[];
+    onEdit: (country: Country) => void;
+    onDelete: (id: number) => void;
+    isAdmin: boolean;
 }
 
-const CountryGrid = ({ countries }: CountryGridProps) => {
+const CountryGrid = ({ countries, onEdit, onDelete, isAdmin }: CountryGridProps) => {
     return (
         <Grid container spacing={{ xs: 2, md: 3 }}>
             {countries.map((country) => (
                 <Grid key={country.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-                    <CountryCard country={country} />
+                    <CountryCard
+                        country={country}
+                        onEdit={onEdit}
+                        onDelete={onDelete}
+                        isAdmin={isAdmin}
+                    />
                 </Grid>
             ))}
         </Grid>
