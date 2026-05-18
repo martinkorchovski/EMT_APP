@@ -1,12 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {
-    getAllCountries,
-    getCountryById,
-    createCountry,
-    updateCountry,
-    deleteCountry,
+    getAllCountries, getCountryById, createCountry, updateCountry, deleteCountry,
 } from '../api/repositories/countryRepository.ts';
-import type { Country, CountryCreateDto, CountryUpdateDto } from '../api/types/country.ts';
+import type {Country, CountryCreateDto, CountryUpdateDto} from '../api/types/country.ts';
 
 export const useCountries = () => {
     const [countries, setCountries] = useState<Country[]>([]);
@@ -64,5 +60,5 @@ export const useCountry = (id: number) => {
             .finally(() => setLoading(false));
     }, [id]);
 
-    return { country, loading, error };
+    return {country, loading, error};
 };

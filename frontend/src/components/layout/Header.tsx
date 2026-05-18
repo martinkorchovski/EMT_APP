@@ -24,6 +24,7 @@ const Header = () => {
                         <Button color="inherit" component={Link} to="/hosts">Hosts</Button>
                         <Button color="inherit" component={Link} to="/countries">Countries</Button>
                         <Button color="inherit" component={Link} to="/users">Users</Button>
+                        <Button color="inherit" component={Link} to="/reservations">Reservations</Button>
                         <Button color="inherit" onClick={handleLogout}>Logout</Button>
                     </>
                 )}

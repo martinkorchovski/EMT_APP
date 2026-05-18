@@ -14,6 +14,7 @@ import CountryDetailsPage from "./pages/CountryDetailsPage.tsx"
 import UsersPage from "./pages/UsersPage.tsx"
 import UserDetailsPage from "./pages/UserDetailsPage.tsx"
 import ProtectedRoute from "./components/shared/ProtectedRoute.tsx";
+import ReservationsPage from './pages/ReservationsPage.tsx';
 
 
 createRoot(document.getElementById('root')!).render(
@@ -45,6 +46,9 @@ createRoot(document.getElementById('root')!).render(
                     } />
                     <Route path="users/:id" element={
                         <ProtectedRoute><UserDetailsPage /></ProtectedRoute>
+                    } />
+                    <Route path="reservations" element={
+                        <ProtectedRoute><ReservationsPage /></ProtectedRoute>
                     } />
                 </Route>
                 <Route path="/login" element={<LoginPage />} />

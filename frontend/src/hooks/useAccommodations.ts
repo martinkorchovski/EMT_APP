@@ -1,10 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {
-    getAllAccommodations,
-    getAccommodationById,
-    createAccommodation,
-    updateAccommodation,
-    deleteAccommodation,
+    getAllAccommodations, getAccommodationById, createAccommodation, updateAccommodation, deleteAccommodation,
 } from '../api/repositories/accommodationRepository.ts';
 import type {
     Accommodation,
@@ -69,5 +65,5 @@ export const useAccommodation = (id: number) => {
             .finally(() => setLoading(false));
     }, [id]);
 
-    return { accommodation, loading, error };
+    return {accommodation, loading, error};
 };

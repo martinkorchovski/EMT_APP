@@ -1,12 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import {useState, useEffect, useCallback} from 'react';
 import {
-    getAllHosts,
-    getHostById,
-    createHost,
-    updateHost,
-    deleteHost,
+    getAllHosts, getHostById, createHost, updateHost, deleteHost,
 } from '../api/repositories/hostRepository.ts';
-import type { Host, HostCreateDto, HostUpdateDto } from '../api/types/host.ts';
+import type {Host, HostCreateDto, HostUpdateDto} from '../api/types/host.ts';
 
 export const useHosts = () => {
     const [hosts, setHosts] = useState<Host[]>([]);
@@ -64,5 +60,5 @@ export const useHost = (id: number) => {
             .finally(() => setLoading(false));
     }, [id]);
 
-    return { host, loading, error };
+    return {host, loading, error};
 };

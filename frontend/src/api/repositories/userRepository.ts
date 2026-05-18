@@ -10,5 +10,8 @@ export const getUserById = (id: number) =>
 export const login = (data: LoginDto) =>
     axiosInstance.post<AuthResponse>('/auth/login', data);
 
+export const getCurrentUser = () =>
+    axiosInstance.get<User>('/users/me');
+
 export const register = (data: RegisterDto) =>
     axiosInstance.post<AuthResponse>('/auth/register', data);

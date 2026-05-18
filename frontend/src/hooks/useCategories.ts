@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { getAllCategories } from '../api/repositories/categoryRepository.ts';
-import type { Category } from '../api/types/category.ts';
+import {useState, useEffect} from 'react';
+import {getAllCategories} from '../api/repositories/categoryRepository.ts';
+import type {Category} from '../api/types/category.ts';
 
 export const useCategories = () => {
     const [categories, setCategories] = useState<Category[]>([]);
@@ -9,5 +9,5 @@ export const useCategories = () => {
         getAllCategories().then(res => setCategories(res.data));
     }, []);
 
-    return { categories };
+    return {categories};
 };
